@@ -32,6 +32,9 @@ body{
   display:flex;
   flex-direction:column;
 }
+.screen[hidden]{
+  display:none;
+}
 
 /* ---------- Top bar ---------- */
 .topbar{
