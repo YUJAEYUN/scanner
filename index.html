@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0B0D0F" />
+<title>Scan → PDF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============ CAMERA SCREEN ============ -->
+  <section id="screen-camera" class="screen">
+    <header class="topbar">
+      <div class="counter"><span id="shotCount">0</span><span class="counter-max">/ ∞</span></div>
+      <button id="modeToggle" class="mode-toggle" type="button" aria-label="스캔 모드 전환">
+        <span class="mode-option active" data-mode="bw">흑백</span>
+        <span class="mode-option" data-mode="color">컬러</span>
+      </button>
+    </header>
+
+    <div class="viewfinder-wrap">
+      <video id="video" playsinline autoplay muted></video>
+      <div class="viewfinder-frame" aria-hidden="true">
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+      </div>
+      <div id="scanBeam" class="scan-beam" aria-hidden="true"></div>
+      <div id="flash" class="flash" aria-hidden="true"></div>
+      <p id="cameraHint" class="camera-hint">문서를 프레임 안에 맞춰주세요</p>
+      <p id="cameraError" class="camera-error" hidden></p>
+    </div>
+
+    <footer class="filmstrip-bar">
+      <div id="filmstrip" class="filmstrip" aria-label="촬영된 페이지"></div>
+      <div class="controls-row">
+        <div class="controls-spacer"></div>
+        <button id="captureBtn" class="capture-btn" type="button" aria-label="촬영">
+          <span class="capture-btn-ring"></span>
+        </button>
+        <button id="doneBtn" class="done-btn" type="button" disabled>
+          완료<span id="doneCount" class="done-count"></span>
+        </button>
+      </div>
+    </footer>
+  </section>
+
+  <!-- ============ REVIEW / EXPORT SCREEN ============ -->
+  <section id="screen-review" class="screen" hidden>
+    <header class="topbar">
+      <button id="backBtn" class="text-btn" type="button">← 다시 촬영</button>
+      <div class="counter"><span id="reviewCount">0</span><span class="counter-max">장</span></div>
+    </header>
+
+    <div class="review-grid" id="reviewGrid"></div>
+
+    <footer class="review-footer">
+      <p class="review-hint">순서를 바꾸려면 페이지를 길게 눌러 드래그하세요. ✕ 를 눌러 삭제할 수 있어요.</p>
+      <button id="exportBtn" class="export-btn" type="button">
+        <span id="exportLabel">PDF로 저장</span>
+      </button>
+    </footer>
+  </section>
+
+  <!-- ============ DONE / SAVED SCREEN ============ -->
+  <section id="screen-done" class="screen" hidden>
+    <div class="done-center">
+      <div class="done-check">✓</div>
+      <h1 class="done-title">PDF 저장 완료</h1>
+      <p id="doneSub" class="done-sub"></p>
+      <button id="restartBtn" class="restart-btn" type="button">새로 스캔하기</button>
+    </div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
