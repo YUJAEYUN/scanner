@@ -318,34 +318,45 @@
   // ---------------------------------------------------------------
   async function exportPdf() {
     if (!state.shots.length) return;
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+      alert('PDF 생성 라이브러리를 불러오지 못했어요. 네트워크 연결을 확인한 뒤 새로고침해서 다시 시도해주세요.');
+      return;
+    }
+
     els.exportBtn.disabled = true;
     const total = state.shots.length;
     pdf = null;
 
-    for (let i = 0; i < total; i++) {
-      els.exportLabel.textContent = `PDF 생성 중… (${i + 1}/${total})`;
-      const shot = state.shots[i];
-      const orientation = shot.width > shot.height ? 'l' : 'p';
-      if (i === 0) {
-        pdf = new window.jspdf.jsPDF({
-          orientation,
-          unit: 'px',
-          format: [shot.width, shot.height],
-          compress: true,
-        });
-      } else {
-        pdf.addPage([shot.width, shot.height], orientation);
+    try {
+      for (let i = 0; i < total; i++) {
+        els.exportLabel.textContent = `PDF 생성 중… (${i + 1}/${total})`;
+        const shot = state.shots[i];
+        const orientation = shot.width > shot.height ? 'l' : 'p';
+        if (i === 0) {
+          pdf = new window.jspdf.jsPDF({
+            orientation,
+            unit: 'px',
+            format: [shot.width, shot.height],
+            compress: true,
+          });
+        } else {
+          pdf.addPage([shot.width, shot.height], orientation);
+        }
+        pdf.addImage(shot.dataUrl, 'JPEG', 0, 0, shot.width, shot.height, undefined, 'FAST');
+        // let the UI paint the progress label between pages
+        await new Promise((r) => requestAnimationFrame(r));
       }
-      pdf.addImage(shot.dataUrl, 'JPEG', 0, 0, shot.width, shot.height, undefined, 'FAST');
-      // let the UI paint the progress label between pages
-      await new Promise((r) => requestAnimationFrame(r));
-    }
 
-    const filename = buildFilename();
-    pdf.save(filename);
-    showDone(total, filename);
-    els.exportBtn.disabled = false;
-    els.exportLabel.textContent = 'PDF로 저장';
+      const filename = buildFilename();
+      pdf.save(filename);
+      showDone(total, filename);
+    } catch (err) {
+      console.error('PDF export failed', err);
+      alert('PDF를 만드는 중 문제가 생겼어요. 다시 시도해주세요.');
+    } finally {
+      els.exportBtn.disabled = false;
+      els.exportLabel.textContent = 'PDF로 저장';
+    }
   }
 
   function buildFilename() {
